@@ -6,8 +6,8 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"github.com/couchbase/gocb"
-	"fmt"
 	"time"
+	"os"
 
 	hashids "github.com/speps/go-hashids"
 
@@ -16,49 +16,64 @@ import (
 var bucket *gocb.Bucket
 var bucketName string
 
+func checkError(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 func ExpandEndpoint(w http.ResponseWriter, req *http.Request) {
-
+	var n1qlParams []interface{}
+	query := gocb.NewN1qlQuery("SELECT `" + bucketName + "`.* FROM `" + bucketName + "` WHERE ShortUrl = $1")
+	params := req.URL.Query()
+	n1qlParams = append(n1qlParams, params.Get("shortUrl"))
+	rows, queryErr := bucket.ExecuteN1qlQuery(query, n1qlParams)
+	checkError(queryErr)
+	var row MyUrl
+	rows.One(&row)
+	json.NewEncoder(w).Encode(row)
 }
 
 func CreateEndpoint(w http.ResponseWriter, req *http.Request) {
-	var url MyURL
-	_ = json.NewDecoder(req.Body).Decode(&url)
-	var n1qlParams []interface{}
+	var url MyUrl
+	jsonError := json.NewDecoder(req.Body).Decode(&url)
+	log.Println(url)
+	checkError(jsonError)
+	var n1qlParams []interface{} // query parameters in n1ql
 	n1qlParams = append(n1qlParams, url.Longurl)
 	query := gocb.NewN1qlQuery("SELECT `" + bucketName + "`.* FROM `" + bucketName + "` WHERE Longurl = $1")
-	fmt.Println(bucket.ExecuteN1qlQuery)
-	fmt.Println(bucketName)
+
 
 	rows, err := bucket.ExecuteN1qlQuery(query, n1qlParams)
+
 	if err != nil {
 		w.WriteHeader(401)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	var row MyURL
+	var row MyUrl
 	rows.One(&row)
-	if row == (MyURL{}) {
+	if row == (MyUrl{}) {
 		hd := hashids.NewData()
 		h, err := hashids.NewWithData(hd)
-		if err != nil {
-			log.Fatal(err)
-		}
+		checkError(err)
 		now := time.Now()
 		url.ID, _ = h.Encode([]int{int(now.Unix())})
-		url.ShortUrl = "http//localhost:12345/" + url.ID
+		url.ShortUrl = "http://localhost:12345/" + url.ID
 		bucket.Insert(url.ID, url, 0)
 	} else {
 		url = row
 	}
 	json.NewEncoder(w).Encode(url)
-
 }
 
 func RootEndpoint(w http.ResponseWriter, req *http.Request) {
-
+	params := mux.Vars(req)
+	var url MyUrl
+	bucket.Get(params["id"], &url)
+	http.Redirect(w, req,url.Longurl, 301)
 }
 
-type MyURL struct {
+type MyUrl struct {
 	ID string `json:"id,omitempty"`
 	Longurl string `json:"Longurl, omitempty"`
 	ShortUrl string `json:"ShortUrl, omitempty"`
@@ -68,23 +83,15 @@ type MyURL struct {
 
 func main() {
 	router := mux.NewRouter()
-	auth :=  gocb.PasswordAuthenticator{"khaledthekhaled", "khaledtinubu"}
+	auth := gocb.PasswordAuthenticator{"khaledthekhaled", "khaledtinubu"}
 	cluster, err1 := gocb.Connect("couchbase://127.0.0.1")
-	if err1 != nil {
-			log.Fatal(err1)
-		}
+	checkError(err1)
 	err2 := cluster.Authenticate(auth)
-	if err2 != nil {
-			fmt.Println("FAD")
-			log.Fatal(err2)
-		}
+	checkError(err2)
 	bucketName = "example"
-	myBucket, err := cluster.OpenBucket(bucketName,"")
-	if err != nil {
-			log.Fatal(err)
-		}
+	myBucket, bucketError := cluster.OpenBucket(bucketName,"")
+	checkError(bucketError)
 	bucket = myBucket
-	fmt.Println(bucket)
 	router.HandleFunc("/create", CreateEndpoint).Methods("PUT")
 	router.HandleFunc("/expand", ExpandEndpoint).Methods("GET")
 	router.HandleFunc("/{id}", RootEndpoint).Methods("GET")
