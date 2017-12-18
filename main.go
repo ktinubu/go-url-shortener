@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"github.com/couchbase/gocb"
 	"time"
-	"os"
+	//"os"
 
 	hashids "github.com/speps/go-hashids"
 
@@ -21,6 +21,7 @@ func checkError(err error) {
 		log.Fatal(err)
 	}
 }
+
 func ExpandEndpoint(w http.ResponseWriter, req *http.Request) {
 	var n1qlParams []interface{}
 	query := gocb.NewN1qlQuery("SELECT `" + bucketName + "`.* FROM `" + bucketName + "` WHERE ShortUrl = $1")

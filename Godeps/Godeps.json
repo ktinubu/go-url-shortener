@@ -1,0 +1,69 @@
+{
+	"ImportPath": "github.com/ktinubu/shorturl",
+	"GoVersion": "go1.9",
+	"GodepVersion": "v79",
+	"Deps": [
+		{
+			"ImportPath": "github.com/couchbase/gocb",
+			"Comment": "v1.2.5-2-g1b4912d",
+			"Rev": "1b4912decfa7f079fcbc10073285c7305f734608"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Comment": "v1.6.0-1-g2d5fef0",
+			"Rev": "2d5fef06b891c971b14aa6f71ca5ab6c03a36e0e"
+		},
+		{
+			"ImportPath": "github.com/speps/go-hashids",
+			"Comment": "v1.0.0-37-gc6ced33",
+			"Rev": "c6ced3330f133cec79e144fb11b2e4c5154059ae"
+		},
+		{
+			"ImportPath": "golang.org/x/net/http2",
+			"Rev": "9dfe39835686865bff950a07b394c12a98ddc811"
+		},
+		{
+			"ImportPath": "golang.org/x/net/http2/hpack",
+			"Rev": "9dfe39835686865bff950a07b394c12a98ddc811"
+		},
+		{
+			"ImportPath": "golang.org/x/net/idna",
+			"Rev": "9dfe39835686865bff950a07b394c12a98ddc811"
+		},
+		{
+			"ImportPath": "golang.org/x/net/lex/httplex",
+			"Rev": "9dfe39835686865bff950a07b394c12a98ddc811"
+		},
+		{
+			"ImportPath": "golang.org/x/text/secure/bidirule",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "golang.org/x/text/transform",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "golang.org/x/text/unicode/bidi",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "golang.org/x/text/unicode/norm",
+			"Rev": "88f656faf3f37f690df1a32515b479415e1a6769"
+		},
+		{
+			"ImportPath": "gopkg.in/couchbase/gocbcore.v7",
+			"Comment": "v7.0.5",
+			"Rev": "7e83ad200f5d9b4d12b12b16fa643b036714d5b2"
+		},
+		{
+			"ImportPath": "gopkg.in/couchbaselabs/gocbconnstr.v1",
+			"Comment": "v1.0.1",
+			"Rev": "710456e087a6d497e87f41d0a9d98d6a75672186"
+		},
+		{
+			"ImportPath": "gopkg.in/couchbaselabs/jsonx.v1",
+			"Comment": "v1.0.0",
+			"Rev": "5b7baa20429a46a5543ee259664cc86502738cad"
+		}
+	]
+}
