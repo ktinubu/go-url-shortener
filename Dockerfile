@@ -13,7 +13,7 @@ ADD . $GOPATH/src/app
 
 # should be able to build now
 WORKDIR $GOPATH/src/app 
-RUN go build -o myapp . 
+RUN go build -o main . 
 
 CMD ["/app/main"]
 EXPOSE 12345
