@@ -1,6 +1,7 @@
 
 FROM golang:latest
 
+EXPOSE 12345
 RUN  mkdir -p /go/src \
   && mkdir -p /go/bin \
   && mkdir -p /go/pkg
@@ -15,5 +16,4 @@ ADD . $GOPATH/src/app
 WORKDIR $GOPATH/src/app 
 RUN go build -o main . 
 
-CMD ["/app/main"]
-EXPOSE 12345
+CMD ["/go/src/app/main"]
